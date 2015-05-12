@@ -1,5 +1,7 @@
 package org.graphast.example;
 
+import java.io.IOException;
+
 import org.graphast.config.Configuration;
 import org.graphast.model.Edge;
 import org.graphast.model.EdgeImpl;
@@ -77,27 +79,18 @@ public class GraphExample {
 		return graph;
 
 	}
-
 	
 	public static void main(String[] args) {
-		Graph graph = new GraphExample().generateExample();
-		ShortestPathService shortestPath = new DijkstraConstantWeight(graph);
-		Path path = shortestPath.shortestPath(0, 6);
-		System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPathCost());
-		System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPath());
+		try {
+			Graph graph = new GraphExample().generateExample();
+			graph.save(); // Save the graph for future use.
+			ShortestPathService shortestPath = new DijkstraConstantWeight(graph);
+			Path path = shortestPath.shortestPath(0, 6);
+			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPathCost());
+			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
