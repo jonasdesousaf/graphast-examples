@@ -1,24 +1,26 @@
 package org.graphast.example;
 
-import static org.junit.Assert.assertEquals;
-
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import javax.sound.midi.Sequence;
 
 import org.graphast.model.Edge;
 import org.graphast.model.EdgeImpl;
 import org.graphast.model.Graph;
+import org.graphast.model.GraphBounds;
+import org.graphast.model.GraphBoundsImpl;
 import org.graphast.model.GraphImpl;
 import org.graphast.model.NodeImpl;
+import org.graphast.query.route.osr.BoundsRoute;
+import org.graphast.query.route.osr.OSRSearch;
+import org.graphast.query.route.osr.Sequence;
 import org.graphast.util.DateUtils;
 
 public class RioBusOSRExample {
 	
-	public Graph generateExample() {
+	public static GraphBounds generateExample() {
 		// Graph formation
-		Graph graph = new GraphImpl("rioBus");
+		GraphBounds graph = new GraphBoundsImpl("rioBus");
 		//Nodes:
 		// Stops
 		NodeImpl v;
@@ -429,22 +431,38 @@ public class RioBusOSRExample {
 		return graph;
 	}
 	
-	public void main(String[] args) {
-		Graph graph = generateExample();
-		OSRSearch osr = new OSRSearch(graphBoundsPoI, bounds, graphBoundsPoIReverse);
+	public static void main(String[] args) throws ParseException {
+		short type = 0;
+		Graph graph = RioBusOSRExample.generateExample();
+		Graph reverseGraph = graph;
+		reverseGraph.reverseGraph();
+		BoundsRoute bounds = new BoundsRoute((GraphBounds) graph, type);
+		OSRSearch osr = new OSRSearch((GraphBounds)graph, bounds, (GraphBounds)reverseGraph);
 		ArrayList<Integer> categories = new ArrayList<Integer>();
-		categories.add(2);
-		categories.add(1);
+		//categories.add(2);
+		//categories.add(1);
 		
-    	Date date = DateUtils.parseDate(0, 550, 0);
+		// day test
+    	Date date = DateUtils.parseDate(6, 0, 0);
     	
     	graph = osr.getGraphAdapter();
     	
-    	Sequence seq = osr.search(graph.getNode(1), graph.getNode(7), date, categories);
+    	Sequence seq = osr.search(graph.getNode(1), graph.getNode(41), date, categories);
     	
-    	assertEquals(7980000, seq.getDistance());
-    	assertEquals(37679450, seq.getTimeToService());
-    	assertEquals(29699450, seq.getWaitingTime());
+    	System.out.println(seq.getDistance());
+    	System.out.println(seq.getTimeToService());
+    	System.out.println(seq.getWaitingTime());
+    	
+    	// night test
+    	date = DateUtils.parseDate(18, 0, 0);
+    	
+    	graph = osr.getGraphAdapter();
+    	
+    	seq = osr.search(graph.getNode(1), graph.getNode(41), date, categories);
+    	
+    	System.out.println(seq.getDistance());
+    	System.out.println(seq.getTimeToService());
+    	System.out.println(seq.getWaitingTime());
     	
 	}
 }
