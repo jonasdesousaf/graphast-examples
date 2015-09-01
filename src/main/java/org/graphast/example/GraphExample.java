@@ -1,6 +1,7 @@
 package org.graphast.example;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.graphast.config.Configuration;
 import org.graphast.model.Edge;
@@ -10,7 +11,9 @@ import org.graphast.model.GraphImpl;
 import org.graphast.model.NodeImpl;
 import org.graphast.query.route.shortestpath.ShortestPathService;
 import org.graphast.query.route.shortestpath.dijkstra.DijkstraConstantWeight;
+import org.graphast.query.route.shortestpath.dijkstra.DijkstraLinearFunction;
 import org.graphast.query.route.shortestpath.model.Path;
+import org.graphast.util.DateUtils;
 
 public class GraphExample {
 
@@ -79,12 +82,13 @@ public class GraphExample {
 
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		try {
 			Graph graph = new GraphExample().generateExample();
 			graph.save(); // Save the graph for future use.
-			ShortestPathService shortestPath = new DijkstraConstantWeight(graph);
-			Path path = shortestPath.shortestPath(0, 6);
+			ShortestPathService shortestPath = new DijkstraLinearFunction(graph);
+			Date time = DateUtils.parseDate(18, 0, 0);
+			Path path = shortestPath.shortestPath(0, 6, time);
 			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPathCost());
 			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPath());
 		} catch (IOException e) {
