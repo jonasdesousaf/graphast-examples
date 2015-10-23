@@ -85,8 +85,8 @@ public class GraphExample3 {
 			graph.save(); // Save the graph for future use.
 			ShortestPathService shortestPath = new DijkstraConstantWeight(graph);
 			Path path = shortestPath.shortestPath(0, 6);
-			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPathCost());
-			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPath());
+			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getTotalDistance());
+			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getInstructions());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

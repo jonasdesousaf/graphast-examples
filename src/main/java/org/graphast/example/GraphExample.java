@@ -10,7 +10,6 @@ import org.graphast.model.Graph;
 import org.graphast.model.GraphImpl;
 import org.graphast.model.NodeImpl;
 import org.graphast.query.route.shortestpath.ShortestPathService;
-import org.graphast.query.route.shortestpath.dijkstra.DijkstraConstantWeight;
 import org.graphast.query.route.shortestpath.dijkstra.DijkstraLinearFunction;
 import org.graphast.query.route.shortestpath.model.Path;
 import org.graphast.util.DateUtils;
@@ -89,8 +88,8 @@ public class GraphExample {
 			ShortestPathService shortestPath = new DijkstraLinearFunction(graph);
 			Date time = DateUtils.parseDate(18, 0, 0);
 			Path path = shortestPath.shortestPath(0, 6, time);
-			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPathCost());
-			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPath());
+			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getTotalDistance());
+			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getInstructions());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
