@@ -1,51 +1,46 @@
 package org.graphast.example;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
 import org.graphast.config.Configuration;
-import org.graphast.geometry.Point;
-import org.graphast.graphgenerator.GraphGenerator;
 import org.graphast.importer.CostGenerator;
 import org.graphast.importer.OSMImporterImpl;
 import org.graphast.importer.POIImporter;
 import org.graphast.model.Graph;
 import org.graphast.model.GraphBounds;
 import org.graphast.model.GraphBoundsImpl;
-import org.graphast.model.GraphImpl;
 import org.graphast.query.route.osr.BoundsRoute;
 import org.graphast.query.route.osr.OSRSearch;
 import org.graphast.query.route.osr.Sequence;
 import org.graphast.query.route.shortestpath.AbstractShortestPathService;
-import org.graphast.query.route.shortestpath.dijkstra.DijkstraLinearFunction;
-import org.graphast.query.route.shortestpath.model.Path;
 import org.graphast.util.DateUtils;
 
-import com.graphhopper.util.StopWatch;
+public class MonacoTest {
 
-public class SeattleTest {
-
-	private static Graph seattleGraph;
-	protected static AbstractShortestPathService serviceSeattle;
+	private static Graph monacoGraph;
+	protected static AbstractShortestPathService serviceMonaco;
 	
 	private static OSRSearch osr;
 	private static GraphBounds graphBoundsPoI, graphBoundsPoIReverse;
 	
-	public static void main( String[] args ) throws NumberFormatException, IOException, ParseException {
+public static void main( String[] args ) throws NumberFormatException, IOException, ParseException {
 		
-//		graphBoundsPoI = generateSeattle();
+//		graphBoundsPoI = generateMonaco();
 		
 		short graphType = 0;
 		
 //		seattleGraph = new GraphImpl(Configuration.USER_HOME + "/graphast/test/seattle");
 //		seattleGraph.load();
 		
-		graphBoundsPoI =  new GraphBoundsImpl(Configuration.USER_HOME + "/graphast/test/seattle");
+		graphBoundsPoI =  new GraphBoundsImpl(Configuration.USER_HOME + "/graphast/test/monaco");
 		graphBoundsPoI.load();
 		
-		graphBoundsPoIReverse = new GraphBoundsImpl(Configuration.USER_HOME + "/graphast/test/seattle");
+		graphBoundsPoIReverse = new GraphBoundsImpl(Configuration.USER_HOME + "/graphast/test/monaco");
 		graphBoundsPoIReverse.load();
 		
 		graphBoundsPoIReverse.reverseGraph();
@@ -58,16 +53,21 @@ public class SeattleTest {
 		
 		
 		ArrayList<Integer> categories = new ArrayList<Integer>();
-		categories.add(67);
+		categories.add(6);
 		categories.add(161);
 		
 		Date date = DateUtils.parseDate(0, 550, 0);
     	
     	Graph graph = osr.getGraphAdapter();
     	
-    	Sequence seq = osr.search(graph.getNode(1), graph.getNode(7), date, categories);
+    	Sequence seq = osr.search(graph.getNode(130), graph.getNode(511), date, categories);
 		
-		
+    	System.out.println("seq.getDistance(): " + seq.getDistance());
+    	System.out.println("seq.getTimeToService(): " + seq.getTimeToService());
+    	System.out.println("seq.getWaitingTime(): " + seq.getWaitingTime());
+
+    	
+    	
 //		System.out.println(seattleGraph.getNumberOfNodes());
 //		System.out.println(seattleGraph.getNumberOfEdges());
 		
@@ -102,16 +102,16 @@ public class SeattleTest {
 		
 	}
 	
-	public static GraphBounds generateSeattle() throws NumberFormatException, IOException {
+	public static GraphBounds generateMonaco() throws NumberFormatException, IOException {
 
-		String osmFile = SeattleTest.class.getResource("/seattle.osm.pbf").getPath();
-		String graphHopperSeattleDir = Configuration.USER_HOME + "/graphhopper/test/seattle";
-		String graphastSeattleDir = Configuration.USER_HOME + "/graphast/test/seattle";
+		String osmFile = SeattleTest.class.getResource("/monaco-150112.osm.pbf").getPath();
+		String graphHopperMonacoDir = Configuration.USER_HOME + "/graphhopper/test/monaco";
+		String graphastMonacoDir = Configuration.USER_HOME + "/graphast/test/monaco";
 
-		GraphBounds graph = new OSMImporterImpl(osmFile, graphHopperSeattleDir, graphastSeattleDir).execute();
+		GraphBounds graph = new OSMImporterImpl(osmFile, graphHopperMonacoDir, graphastMonacoDir).execute();
 		
 		System.out.println("Importação de POIS iniciada!");
-		POIImporter.importPoIList(graph, SeattleTest.class.getResource("/seattlepois.csv").getPath());
+		POIImporter.importPoIList(graph, MonacoTest.class.getResource("/monacopois.csv").getPath());
 		System.out.println("Importação de POIS finalizada!");
 		
 		System.out.println("Geração de custos aleatórios iniciada!");
