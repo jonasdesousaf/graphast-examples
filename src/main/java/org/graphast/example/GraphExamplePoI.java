@@ -1,7 +1,5 @@
 package org.graphast.example;
 
-import java.io.IOException;
-
 import org.graphast.config.Configuration;
 import org.graphast.model.Edge;
 import org.graphast.model.EdgeImpl;
@@ -164,13 +162,9 @@ public class GraphExamplePoI {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		try {
-			GraphBounds graph = new GraphExamplePoI().generateExample();
-			graph.save(); // Save the graph for future use.
-			System.out.println("finished");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		GraphBounds graph = new GraphExamplePoI().generateExample();
+		graph.save(); // Save the graph for future use.
+		System.out.println("finished");
 	}
 
 }

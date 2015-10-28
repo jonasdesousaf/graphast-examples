@@ -1,10 +1,7 @@
 package org.graphast.example;
 
-import java.io.PrintWriter;
-
 import org.graphast.config.Configuration;
 import org.graphast.importer.OSMImporterImpl;
-import org.graphast.model.Edge;
 import org.graphast.model.Graph;
 
 public class MonacoImporterApp {

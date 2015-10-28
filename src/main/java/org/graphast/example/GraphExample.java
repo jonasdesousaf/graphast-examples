@@ -1,6 +1,5 @@
 package org.graphast.example;
 
-import java.io.IOException;
 import java.util.Date;
 
 import org.graphast.config.Configuration;
@@ -82,17 +81,13 @@ public class GraphExample {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		try {
-			Graph graph = new GraphExample().generateExample();
-			graph.save(); // Save the graph for future use.
-			ShortestPathService shortestPath = new DijkstraLinearFunction(graph);
-			Date time = DateUtils.parseDate(18, 0, 0);
-			Path path = shortestPath.shortestPath(0, 6, time);
-			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getTotalDistance());
-			System.out.println("The Shortest Path distance between 0 and 6 is " + path.getInstructions());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Graph graph = new GraphExample().generateExample();
+		graph.save(); // Save the graph for future use.
+		ShortestPathService shortestPath = new DijkstraLinearFunction(graph);
+		Date time = DateUtils.parseDate(18, 0, 0);
+		Path path = shortestPath.shortestPath(0, 6, time);
+		System.out.println("The Shortest Path distance between 0 and 6 is " + path.getTotalDistance());
+		System.out.println("The Shortest Path distance between 0 and 6 is " + path.getPath());
 	}
 
 }
