@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.graphast.config.Configuration;
+import org.graphast.geometry.PoI;
 import org.graphast.importer.CostGenerator;
 import org.graphast.importer.OSMImporterImpl;
 import org.graphast.importer.POIImporter;
@@ -35,12 +36,12 @@ public class MonacoTest {
 
 	public static void main( String[] args ) throws NumberFormatException, IOException, ParseException {
 
-//				graphBoundsPoI = generateMonaco();
+				graphBoundsPoI = generateMonaco();
 	
 		short graphType = 0;
 
 		//		seattleGraph = new GraphImpl(Configuration.USER_HOME + "/graphast/test/seattle");
-		//		graphBoundsPoI.load();
+//				graphBoundsPoI.load();
 
 		graphBoundsPoI =  new GraphBoundsImpl(Configuration.USER_HOME + "/graphast/test/monaco");
 		graphBoundsPoI.load();
@@ -77,6 +78,7 @@ public class MonacoTest {
 
 		List<Path> allPaths = new ArrayList<Path>();
 		
+		
 		for(int i=0; i<result.size(); i++) {
 			if(i==result.size()-2) {
 				break;
@@ -91,11 +93,23 @@ public class MonacoTest {
 			Path shortestPath = serviceMonaco.shortestPath(source, target);
 			sw.stop();
 			
+			
+			Node possiblePoI = graph.getNode(source);
+			List<PoI> temporaryListOfPoIs = new ArrayList<PoI>();
+			if(possiblePoI.getCategory()>0) {
+				PoI temporaryPoI = new PoI(possiblePoI.getCategory(), possiblePoI.getLabel(), 
+						possiblePoI.getLatitude(), possiblePoI.getLongitude());
+				temporaryListOfPoIs.add(temporaryPoI);
+				
+			}
+			
+			shortestPath.setListOfPoIs(temporaryListOfPoIs);
+			
 			allPaths.add(shortestPath);
 		
 		}
 		
-		
+		Path resultPath = Path.pathsConcatanation(allPaths);
 		int counter = 0;
 		System.out.println("sequence,latitude,longitude");
 		for(Long points : result) {
