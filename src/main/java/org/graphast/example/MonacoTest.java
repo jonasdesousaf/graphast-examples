@@ -46,7 +46,8 @@ public class MonacoTest {
 		serviceMonaco = new DijkstraConstantWeight(graphBoundsPoI);
 
 		BoundsRoute bounds = new BoundsRoute(graphBoundsPoI, graphType);
-
+		bounds.createBounds();
+		
 		osr = new OSRSearch((GraphBounds)graphBoundsPoI, bounds, (GraphBounds)graphBoundsPoIReverse);
 
 		ArrayList<Integer> categories = new ArrayList<Integer>();
