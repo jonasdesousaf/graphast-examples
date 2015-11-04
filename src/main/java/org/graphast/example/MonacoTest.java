@@ -3,24 +3,21 @@ package org.graphast.example;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
-import org.graphast.config.Configuration;
+import org.graphast.app.AppGraph;
+import org.graphast.app.GraphInfo;
+import org.graphast.app.GraphService;
 import org.graphast.geometry.Point;
-import org.graphast.importer.CostGenerator;
-import org.graphast.importer.OSMImporterImpl;
-import org.graphast.importer.POIImporter;
 import org.graphast.model.Graph;
 import org.graphast.model.GraphBounds;
-import org.graphast.model.GraphBoundsImpl;
 import org.graphast.query.route.osr.BoundsRoute;
 import org.graphast.query.route.osr.OSRSearch;
-import org.graphast.query.route.osr.Sequence;
 import org.graphast.query.route.shortestpath.AbstractShortestPathService;
 import org.graphast.query.route.shortestpath.dijkstra.DijkstraConstantWeight;
 import org.graphast.query.route.shortestpath.model.Path;
 import org.graphast.util.DateUtils;
+import org.graphast.util.StringUtils;
 
 public class MonacoTest {
 
@@ -31,73 +28,92 @@ public class MonacoTest {
 
 	public static void main( String[] args ) throws NumberFormatException, IOException, ParseException {
 
-		graphBoundsPoI = generateMonaco();
+		osrMonaco();
+//		dijkstraMonaco();
+
+	}
+
+	public static void dijkstraMonaco() throws NumberFormatException, IOException {
+
+		GraphService service = new GraphService();
+		GraphInfo gi = new GraphInfo();
+
+		gi.setAppName("monaco-osr");
+		gi.setNetwork("http://download.geofabrik.de/europe/monaco-latest.osm.pbf");
+		gi.setPoiCategoryFilter(StringUtils.splitIntToList(",","6,46,34,33,29,25,23,22,162,13,105"));
+
+		service.create(gi);
+		service.load("monaco-osr");
+
+//		System.out.println(seattleGraph.getNumberOfNodes());
+//		System.out.println(seattleGraph.getNumberOfEdges());
+		
+//		seattleGraph.logNodes();
+//		
+//		
+		
+		
+//		serviceSeattle = new DijkstraLinearFunction(seattleGraph);
+//		
+//		
+//		Long source = seattleGraph.getNodeId(47.650698,-122.393716);
+//		Long target = seattleGraph.getNodeId(47.555501,-122.283506);
+//		Date time = DateUtils.parseDate(8, 0, 0);
+//
+//		StopWatch sw = new StopWatch();
+//
+//		sw.start();
+//		Path shortestPath = serviceSeattle.shortestPath(source, target,time);
+//		sw.stop();
+//
+//		
+//		System.out.println(shortestPath.toString());
+//		System.out.println("Execution Time of shortestPathWashintonTest(): {}ms" + sw.getTime());
+//		System.out.println("Path Total Distance: {}" + shortestPath.getTotalDistance());
+//		System.out.println("Path Total Cost: {}"+ shortestPath.getTotalCost());
+//
+//		for(Point point : shortestPath.getGeometry()) {
+//			System.out.println(point.getLatitude() + "," + point.getLongitude());
+//		}
+	}
+
+	public static void osrMonaco() throws NumberFormatException, IOException {
+
+		GraphService service = new GraphService();
+		GraphInfo gi = new GraphInfo();
+		gi.setAppName("monaco-osr");
+		gi.setNetwork("http://download.geofabrik.de/europe/monaco-latest.osm.pbf");
+		gi.setPoiCategoryFilter(StringUtils.splitIntToList(",","6,46,34,33,29,25,23,22,162,13,105"));
+		service.create(gi);
+		service.load("monaco-osr");
 
 		short graphType = 0;
 
-		graphBoundsPoI =  new GraphBoundsImpl(Configuration.USER_HOME + "/graphast/test/monaco");
-		graphBoundsPoI.load();
-
-		graphBoundsPoIReverse = new GraphBoundsImpl(Configuration.USER_HOME + "/graphast/test/monaco");
-		graphBoundsPoIReverse.load();
-
-		graphBoundsPoIReverse.reverseGraph();
+		graphBoundsPoI = AppGraph.getGraph();
 
 		serviceMonaco = new DijkstraConstantWeight(graphBoundsPoI);
 
-		BoundsRoute bounds = new BoundsRoute(graphBoundsPoI, graphType);
-		bounds.createBounds();
-		
-		osr = new OSRSearch((GraphBounds)graphBoundsPoI, bounds, (GraphBounds)graphBoundsPoIReverse);
+		osr = new OSRSearch(graphBoundsPoI, graphType);
 
 		ArrayList<Integer> categories = new ArrayList<Integer>();
-		categories.add(34);
-		categories.add(13);
+		categories.add(23);
+		categories.add(25);
 
-		Date date = DateUtils.parseDate(8, 0, 0);
+		Date date = DateUtils.parseDate(16, 0, 0);
 
 		Graph graph = osr.getGraphAdapter();
 
-		Long source = graph.getNodeId(43.726669,7.417574);
-		Long target = graph.getNodeId(43.749366,7.436328);
-
-		Sequence seq = osr.search(graph.getNode(source), graph.getNode(target), date, categories);
+		Long source = graph.getNodeId(47.641336,-122.391472);
+		Long target = graph.getNodeId(47.550811,-122.297401);
 
 		Path resultPath = osr.getFullPath(graph.getNode(source), graph.getNode(target), date, categories);
+
 		int counter = 0;
 		System.out.println("sequence,latitude,longitude");
 		for(Point points : resultPath.getGeometry()) {
 			counter ++;
 			System.out.println(counter + "," + points.getLatitude() + "," + points.getLongitude());
 		}
-
-
-		System.out.println("seq.getDistance(): " + seq.getDistance());
-		System.out.println("seq.getTimeToService(): " + seq.getTimeToService());
-		System.out.println("seq.getWaitingTime(): " + seq.getWaitingTime());
-
-	}
-
-	public static GraphBounds generateMonaco() throws NumberFormatException, IOException {
-
-		String osmFile = SeattleTest.class.getResource("/monaco-150112.osm.pbf").getPath();
-		String graphHopperMonacoDir = Configuration.USER_HOME + "/graphhopper/test/monaco";
-		String graphastMonacoDir = Configuration.USER_HOME + "/graphast/test/monaco";
-
-		GraphBounds graph = new OSMImporterImpl(osmFile, graphHopperMonacoDir, graphastMonacoDir).execute();
-
-		Integer[] poiFilter = new Integer[] {6,46,34,33,29,25,23,22,162,13,105};
-
-		System.out.println("Importação de POIS iniciada!");
-		POIImporter.importPoIList(graph, MonacoTest.class.getResource("/monacopois").getPath(), Arrays.asList(poiFilter));
-		System.out.println("Importação de POIS finalizada!");
-
-		System.out.println("Geração de custos aleatórios iniciada!");
-		CostGenerator.generateAllSyntheticEdgesCosts(graph);
-		System.out.println("Geração de custos aleatórios finalizada!");
-
-		graph.save();
-		return graph;
-
+		
 	}
 }
