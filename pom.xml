@@ -23,8 +23,21 @@
 	</repositories>
 
 	<dependencies>
-		<!-- <dependency> <groupId>org.graphast</groupId> <artifactId>graphast</artifactId> 
-			<version>0.1.1</version> </dependency> -->
+		<dependency>
+			<groupId>com.github.davidmoten</groupId>
+			<artifactId>grumpy-ogc</artifactId>
+			<version>0.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.davidmoten</groupId>
+			<artifactId>rtree</artifactId>
+			<version>0.7.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graphast</groupId>
+			<artifactId>graphast-core</artifactId>
+			<version>0.1.5</version>
+		</dependency>
 		<dependency>
 			<groupId>com.graphhopper</groupId>
 			<artifactId>graphhopper</artifactId>
