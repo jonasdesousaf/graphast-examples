@@ -13,8 +13,8 @@ import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Point;
 
 public class ForcaBruta {
-	public static final Point berlin = Geometries.point(52.50188, 13.41573); //lugar simples
-	public static final Point monaco = Geometries.point(43.7402, 7.42197); //lugar esparsso id=439
+	public static final Point berlin = Geometries.point(52.50188, 13.41573); //id=12732 / externalId=26120
+	public static final Point monaco = Geometries.point(43.7402, 7.42197); //id=439 / 
 	
 	public static Node getNearestNode (Graph graph, double latitude, double longitude) {
 		Node point = new NodeImpl();
